@@ -1,3 +1,5 @@
+import csv
+
 class InputHandler:
 
     def __init__(self, input_path):
@@ -14,7 +16,15 @@ class InputHandler:
             raise IOError
 
     def load_csv(self):
-        pass
+        self.event_log = []
+        try:
+            with open(self.input_path, newline='', encoding='utf-8-sig') as f:
+                reader = csv.reader(f)
+                for row in reader:
+                    self.event_log.append(row[0])
+            return self.event_log
+        except:
+            raise IOError
 
     def load_xes(self):
         pass
@@ -27,9 +37,9 @@ class InputHandler:
         elif self.input_path.endswith('.xes'):
             return self.load_xes()
         else:
-            raise ValueError
+            raise ValueError('[ERROR] - File extension not recognized')
 
 if __name__ == '__main__':
-    input_handler = InputHandler('event_log.txt')
+    input_handler = InputHandler('event_log.csv')
     result = input_handler.load()
     print(result)
