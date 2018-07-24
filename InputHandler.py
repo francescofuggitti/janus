@@ -1,4 +1,5 @@
 import csv
+from opyenxes.data_in.XUniversalParser import XUniversalParser
 
 class InputHandler:
 
@@ -13,7 +14,7 @@ class InputHandler:
                 f.close()
             return self.event_log
         except:
-            raise IOError
+            raise IOError('[ERROR] - Unable to import text file')
 
     def load_csv(self):
         self.event_log = []
@@ -24,10 +25,15 @@ class InputHandler:
                     self.event_log.append(row[0])
             return self.event_log
         except:
-            raise IOError
+            raise IOError('[ERROR] - Unable to import csv file')
 
     def load_xes(self):
-        pass
+        try:
+            with open(self.input_path) as log_file:
+                self.event_log = XUniversalParser().parse(log_file)[0]
+            return self.event_log
+        except:
+            raise IOError('[ERROR] - Unable to import xes file')
 
     def load(self):
         if self.input_path.endswith('.txt'):
