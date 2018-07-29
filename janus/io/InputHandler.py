@@ -5,7 +5,7 @@ class InputHandler:
 
     def __init__(self, input_path):
         self.input_path = input_path
-        self.event_log = None
+        self.event_log = self.load()
 
     def load_txt(self):
         try:
@@ -14,7 +14,7 @@ class InputHandler:
                 f.close()
             return self.event_log
         except:
-            raise IOError('[ERROR] - Unable to import text file')
+            raise IOError('[ERROR]: Unable to import text file')
 
     def load_csv(self):
         self.event_log = []
@@ -25,7 +25,7 @@ class InputHandler:
                     self.event_log.append(row[0])
             return self.event_log
         except:
-            raise IOError('[ERROR] - Unable to import csv file')
+            raise IOError('[ERROR]: Unable to import csv file')
 
     def load_xes(self):
         try:
@@ -33,7 +33,7 @@ class InputHandler:
                 self.event_log = XUniversalParser().parse(log_file)[0]
             return self.event_log
         except:
-            raise IOError('[ERROR] - Unable to import xes file')
+            raise IOError('[ERROR]: Unable to import xes file')
 
     def load(self):
         if self.input_path.endswith('.txt'):
@@ -43,7 +43,7 @@ class InputHandler:
         elif self.input_path.endswith('.xes'):
             return self.load_xes()
         else:
-            raise ValueError('[ERROR] - File extension not recognized')
+            raise ValueError('[ERROR]: File extension not recognized')
 
 if __name__ == '__main__':
     input_handler = InputHandler('files/event_log.csv')
