@@ -46,6 +46,6 @@ class InputHandler:
             raise ValueError('[ERROR] - File extension not recognized')
 
 if __name__ == '__main__':
-    input_handler = InputHandler('event_log.csv')
+    input_handler = InputHandler('files/event_log.csv')
     result = input_handler.load()
     print(result)
