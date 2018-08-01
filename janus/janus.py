@@ -16,8 +16,8 @@ log = input_log.event_log
 activator = params['<activator>']
 #formula = params['<formula>']
 
-sepFormula1 = {'Yb', 'T', 'T'}
-sepFormula2 = {'T', 'T', 'Ec'}
+sepFormula1 = ('Yb', 'T', 'T')
+sepFormula2 = ('T', 'T', 'Ec')
 
 constraint = Formula([sepFormula1, sepFormula2]) #set manually the constraint
 
@@ -27,7 +27,7 @@ sepautset = SeparatedAutomataSet(constraint).automa_set()
 O = Bag()
 for event in trace:
     for past, now, future in sepautset:
-        past.perform_transition(event)
+        past.make_transition(event)
     if event == activator:
         J = set()
         #for past, now, future in sepautset:
@@ -36,4 +36,4 @@ for event in trace:
         O.add(J)
     for j in O:
         for state, automa in J:
-            state = automa.perform_transition(event)
+            state = automa.make_transition(event)

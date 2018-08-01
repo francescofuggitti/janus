@@ -64,3 +64,18 @@ class Automa:
         automa += 'accepting_states: {}\n'.format(str(self.accepting_states))
         automa += 'transitions: {}'.format(str(self.transitions))
         return automa
+
+    def make_transition(self, action):
+        pass
+
+    def is_accepting(self):
+        if self.current_state in self.accepting_states:
+            return True
+        else:
+            return False
+
+    def accepts(self, input_symbol):
+        if input_symbol in self.transitions[self.initial_state]:
+            return self.transitions[self.initial_state][input_symbol]
+        else:
+            raise ValueError('{} is not a valid input symbol'.format(input_symbol))

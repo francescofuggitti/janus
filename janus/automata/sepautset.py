@@ -19,11 +19,11 @@ class SeparatedAutomataSet:
             trans = Translator(formula)
             trans.formula_parser()
             trans.translate()
-            trans.createMonafile(False)  # it creates automa.mona file
-            trans.invoke_mona("automa.mona")  # it returns an intermediate automa.dot file
+            trans.createMonafile(True)  # true for DECLARE assumptions
+            trans.invoke_mona("automa.mona") # returns inter-automa.dot
             dot = DotHandler("inter-automa.dot")
             dot.modify_dot()
-            dot.output_dot()
+            dot.output_dot() # returns automa.dot
             automata_list.append(parse_dot("automa.dot"))
             os.remove("automa.mona")
             os.remove("automa.dot")

@@ -8,7 +8,7 @@ class SeparatedFormula:
         if len(self.triple) == 3:
             return True
         else:
-            raise ValueError('[ERROR]: the triple is too long')
+            raise ValueError('[ERROR]: input is not a triple')
 
     def __str__(self):
         return str(self.triple)
