@@ -1,6 +1,7 @@
 from janus.io.InputHandler import InputHandler
 from janus.formulas.separatedFormula import SeparatedFormula
 from janus.formulas.formula import Formula
+from janus.automata.sepautset import SeparatedAutomataSet
 import argparse, os
 
 args_parser = argparse.ArgumentParser(description='Janus algorithm computes the interestingness degree of an RCon over'+
