@@ -15,7 +15,11 @@ class SeparatedAutomataSet:
 
     def build_automaton(self, triple):
         automata_list = []
+        symbol = ''
         for formula in triple:
+            for c in formula:
+                if c.islower():
+                    symbol = c
             trans = Translator(formula)
             trans.formula_parser()
             trans.translate()
@@ -24,9 +28,10 @@ class SeparatedAutomataSet:
             dot = DotHandler("inter-automa.dot")
             dot.modify_dot()
             dot.output_dot() # returns automa.dot
-            automata_list.append(parse_dot("automa.dot"))
+            automata_list.append(parse_dot("automa.dot", symbol))
             os.remove("automa.mona")
             os.remove("automa.dot")
+            symbol = ''
         return automata_list
 
     def compute_automa(self):

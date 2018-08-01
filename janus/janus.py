@@ -37,4 +37,5 @@ for event in trace:
         O.add(J)
     for j in O:
         for state, automa in J:
-            state = automa.make_transition(event)
+            automa.make_transition(event)
+            state = automa.current_state
