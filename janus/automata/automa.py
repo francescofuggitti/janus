@@ -16,13 +16,14 @@ class Automa:
                    'u', 'v', 'w', 'x', 'y', 'z')
     used_alpha = None
 
-    def __init__(self, alphabet, states, initial_state, accepting_states, transitions):
+    def __init__(self, symbol, alphabet, states, initial_state, accepting_states, transitions):
+        self.symbol = symbol
         self.alphabet = alphabet
         self.states = states
         self.initial_state = initial_state
         self.accepting_states = accepting_states
         self.transitions = transitions
-        self.current_state = self.initial_state
+        self._current_state = self.initial_state
         self.validate()
 
     def valide_transition_start_states(self):
@@ -65,11 +66,22 @@ class Automa:
         automa += 'transitions: {}'.format(str(self.transitions))
         return automa
 
+    @property
+    def current_state(self):
+        return self._current_state
+
     def make_transition(self, action):
-        pass
+        if 'X' in self.transitions[self._current_state]: # X means whatever action
+            self._current_state = self.transitions[self._current_state]['X']
+        elif action == self.symbol:
+            self._current_state = self.transitions[self._current_state]['1']
+        elif action != self.symbol:
+            self._current_state = self.transitions[self._current_state]['0']
+        else:
+            raise ValueError('[ERROR]: could not make transition with action {}'.format(action))
 
     def is_accepting(self):
-        if self.current_state in self.accepting_states:
+        if self._current_state in self.accepting_states:
             return True
         else:
             return False
