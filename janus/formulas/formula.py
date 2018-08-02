@@ -11,3 +11,7 @@ class Formula:
             return True
         else:
             raise ValueError('[ERROR]: Different types for conjuncts')
+
+    def __str__(self):
+        for triple in self.separatedFormulas:
+            return triple
