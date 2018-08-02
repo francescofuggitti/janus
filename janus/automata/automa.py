@@ -87,7 +87,18 @@ class Automa:
             return False
 
     def accepts(self, input_symbol):
-        if input_symbol in self.transitions[self.initial_state]:
-            return self.transitions[self.initial_state][input_symbol]
+        if input_symbol == self.symbol:
+            if ('X' or '1') in self.transitions[self.initial_state]:
+                return True
+            else:
+                return False
         else:
-            raise ValueError('{} is not a valid input symbol'.format(input_symbol))
+            if ('X' or '0') in self.transitions[self.initial_state]:
+                return True
+            else:
+                return False
+        #
+        # if input_symbol in self.transitions[self.initial_state]:
+        #     return self.transitions[self.initial_state][input_symbol]
+        # else:
+        #     raise ValueError('[ERROR]: "{}" is not a valid input symbol'.format(input_symbol))

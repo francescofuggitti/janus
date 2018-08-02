@@ -22,7 +22,9 @@ def get_final_label(label):
     s1 = label.replace(" ", "")
     s2 = s1.replace('"','')
 
-    if len(s2) < 2:
+    if s2 == '':
+        return ['X']
+    elif len(s2) < 2:
         return [s2]
         #return _split_dont_care(list(s2))
     else:

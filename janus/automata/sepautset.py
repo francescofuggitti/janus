@@ -38,5 +38,5 @@ class SeparatedAutomataSet:
         result = set()
         for triple in self.separated_formulas_set:
             past, present, future = self.build_automaton(triple)
-            result.update((past, present, future))
+            result.add( (past, present, future) )
         return result
