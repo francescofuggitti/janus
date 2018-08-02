@@ -1,10 +1,6 @@
-d
-f
-a
-f
-c
-a
-f
 b
 a
-f
+d
+d
+b
+c
