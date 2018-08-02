@@ -12,3 +12,7 @@ class SeparatedFormula:
 
     def __str__(self):
         return str(self.triple)
+
+    def __iter__(self):
+        for elem in self.triple:
+            yield elem
