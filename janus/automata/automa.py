@@ -1,4 +1,4 @@
-import re
+import re, copy
 
 class Automa:
     """
@@ -20,10 +20,10 @@ class Automa:
         self.symbol = symbol
         self.alphabet = alphabet
         self.states = states
-        self.initial_state = initial_state
+        self._initial_state = initial_state
         self.accepting_states = accepting_states
         self.transitions = transitions
-        self._current_state = self.initial_state
+        self._current_state = self._initial_state
         self.validate()
 
     def valide_transition_start_states(self):
@@ -34,7 +34,7 @@ class Automa:
                         state))
 
     def validate_initial_state(self):
-        if self.initial_state not in self.states:
+        if self._initial_state not in self.states:
             raise ValueError('initial state is not defined as state')
 
     def validate_accepting_states(self):
@@ -61,7 +61,7 @@ class Automa:
     def __str__(self):
         automa = 'alphabet: {}\n'.format(str(self.alphabet))
         automa += 'states: {}\n'.format(str(self.states))
-        automa += 'init_state: {}\n'.format(str(self.initial_state))
+        automa += 'init_state: {}\n'.format(str(self._initial_state))
         automa += 'accepting_states: {}\n'.format(str(self.accepting_states))
         automa += 'transitions: {}'.format(str(self.transitions))
         return automa
@@ -69,6 +69,10 @@ class Automa:
     @property
     def current_state(self):
         return self._current_state
+
+    @property
+    def initial_state(self):
+        return self._initial_state
 
     def make_transition(self, action):
         if 'X' in self.transitions[self._current_state]: # X means whatever action
@@ -88,17 +92,17 @@ class Automa:
 
     def accepts(self, input_symbol):
         if input_symbol == self.symbol:
-            if ('X' or '1') in self.transitions[self.initial_state]:
+            if ('X' or '1') in self.transitions[self._initial_state]:
                 return True
             else:
                 return False
         else:
-            if ('X' or '0') in self.transitions[self.initial_state]:
+            if ('X' or '0') in self.transitions[self._initial_state]:
                 return True
             else:
                 return False
         #
-        # if input_symbol in self.transitions[self.initial_state]:
-        #     return self.transitions[self.initial_state][input_symbol]
+        # if input_symbol in self.transitions[self._initial_state]:
+        #     return self.transitions[self._initial_state][input_symbol]
         # else:
         #     raise ValueError('[ERROR]: "{}" is not a valid input symbol'.format(input_symbol))
