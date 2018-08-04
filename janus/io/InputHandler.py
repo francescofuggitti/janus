@@ -1,5 +1,6 @@
 import csv
 from opyenxes.data_in.XUniversalParser import XUniversalParser
+from opyenxes.classification.XEventAttributeClassifier import XEventAttributeClassifier
 
 class InputHandler:
 
@@ -10,7 +11,7 @@ class InputHandler:
     def load_txt(self):
         try:
             with open(self.input_path, 'r') as f:
-                self.event_log = f.read().splitlines()
+                self.event_log = set(tuple(i) for i in [f.read().splitlines()])
                 f.close()
             return self.event_log
         except:
@@ -30,7 +31,30 @@ class InputHandler:
     def load_xes(self):
         try:
             with open(self.input_path) as log_file:
-                self.event_log = XUniversalParser().parse(log_file)[0]
+                log = XUniversalParser().parse(log_file)[0]
+
+            # get classifiers
+            classifiers = []
+            for cl in log.get_classifier():
+                classifiers.append(cl)
+
+            classifier = XEventAttributeClassifier("activity", [classifiers[0]])
+            log_list = list(map(lambda trace: list(map(classifier.get_class_identity, trace)), log))
+
+            self.event_log = set(tuple(trace) for trace in log_list)
+
+            #
+            # self.event_log = {}
+            # event_str = ''
+            # for trace in log_list:
+            #     for event in trace:
+            #         event_str += event
+            #         if event_str in self.event_log:
+            #             self.event_log[event_str] += 1
+            #         else:
+            #             self.event_log[event_str] = 1
+            #     event_str = ''
+
             return self.event_log
         except:
             raise IOError('[ERROR]: Unable to import xes file')
@@ -46,6 +70,6 @@ class InputHandler:
             raise ValueError('[ERROR]: File extension not recognized')
 
 if __name__ == '__main__':
-    input_handler = InputHandler('files/event_log.csv')
+    input_handler = InputHandler('files/sepsis.xes')
     result = input_handler.load()
     print(result)
