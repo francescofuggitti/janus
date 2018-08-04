@@ -13,8 +13,8 @@ args_parser.add_argument('<activator>', type=str, help='Activator -- MANDATORY')
 params = vars(args_parser.parse_args())
 
 input_log = InputHandler(params['<event-log>'])
-trace = input_log.event_log
-print('[TRACE]: ' + str(trace))
+log_set = input_log.event_log
+
 activator = params['<activator>']
 print('[ACTIVATOR]: ' + activator)
 
@@ -28,42 +28,45 @@ print('[SEPARATED FORMULAS]: ' + str(constraint))
 
 sepautset = SeparatedAutomataSet(constraint).automa_set
 
+for trace in log_set:
+    print('[TRACE]: ' + str(trace))
 # JANUS ALGORITHM SKETCH
-O = []
-for event in trace:
-    for pastAut in sepautset:
-        pastAut[0].make_transition(event)
-        # if pastAut[0].symbol == 'b':
-        #     print('[PAST AUT ' + str(pastAut[0].symbol) + ' ]: ' + str(pastAut[0].current_state))
-    if event == activator:
-        #J = set()
-        J = {}
-        for past, now, future in sepautset:
-            if past.is_accepting() and now.accepts(event):
-                #print('[PAST ' + str(past.symbol) + ' IN ACCEPTING]: state == ' + str(past.current_state))
-                #J.add((future.initial_state, future))
-                temp = copy.deepcopy(future)
-                J[temp] = future.initial_state
-        #print('Janus is: ' + str(J))
-        O.append(J)
-        #print('O bag is: ' + str(O))
-    #print('[OBAG EVENT ' + event + '] ' + str(O))
-    for j in O:
-        for aut, st in j.items():
-            aut.make_transition(event)
-            #print('aut {0}, state after transition {1}: {2}'.format(aut.symbol, event, aut.current_state))
-            j[aut] = aut.current_state
+    O = []
+    for event in trace:
+        # print('[EVENT]: ' + event)
+        for pastAut in sepautset:
+            pastAut[0].make_transition(event)
+            # if pastAut[0].symbol == 'b':
+            #     print('[PAST AUT ' + str(pastAut[0].symbol) + ' ]: ' + str(pastAut[0].current_state))
+        if event == activator:
+            #J = set()
+            J = {}
+            for past, now, future in sepautset:
+                if past.is_accepting() and now.accepts(event):
+                    #print('[PAST ' + str(past.symbol) + ' IN ACCEPTING]: state == ' + str(past.current_state))
+                    #J.add((future.initial_state, future))
+                    temp = copy.deepcopy(future)
+                    J[temp] = future.initial_state
+            #print('Janus is: ' + str(J))
+            O.append(J)
+            #print('O bag is: ' + str(O))
+        #print('[OBAG EVENT ' + event + '] ' + str(O))
+        for j in O:
+            for aut, st in j.items():
+                aut.make_transition(event)
+                #print('aut {0}, state after transition {1}: {2}'.format(aut.symbol, event, aut.current_state))
+                j[aut] = aut.current_state
 
-if O:
-    count = 0
-    for janus in O:
-        for automa, state in janus.items():
-            if state in automa.accepting_states:
-                count += 1
-            else:
-                continue
-    print('[ACTIVATED]: ' + str(len(O)))
-    print('[FULFILLED]: ' + str(count))
-    print(count/len(O))
-else:
-    print(0)
+    if O:
+        count = 0
+        for janus in O:
+            for automa, state in janus.items():
+                if state in automa.accepting_states:
+                    count += 1
+                else:
+                    continue
+        print('[ACTIVATED]: ' + str(len(O)))
+        print('[FULFILLED]: ' + str(count))
+        print('[INTERESTINGNESS DEGREE]: ' + str(count/len(O)))
+    else:
+        print(0)
