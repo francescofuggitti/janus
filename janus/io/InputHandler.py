@@ -46,18 +46,6 @@ class InputHandler:
 
             self._event_log = set(tuple(trace) for trace in log_list)
 
-            #
-            # self.event_log = {}
-            # event_str = ''
-            # for trace in log_list:
-            #     for event in trace:
-            #         event_str += event
-            #         if event_str in self.event_log:
-            #             self.event_log[event_str] += 1
-            #         else:
-            #             self.event_log[event_str] = 1
-            #     event_str = ''
-
         except:
             raise IOError('[ERROR]: Unable to import xes file')
 
