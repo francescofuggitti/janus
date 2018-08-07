@@ -3,6 +3,7 @@ import re
 class Automa:
     """
         DFA Automa:
+        - symbols          => list() ;
         - alphabet         => set() ;
         - states           => set() ;
         - initial_state    => str() ;
@@ -11,13 +12,9 @@ class Automa:
         **key**: *source* ∈ states
         **value**: {*action*: *destination*)
     """
-    MAX_ALPHABET = 26
-    en_alphabet = ('a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't',
-                   'u', 'v', 'w', 'x', 'y', 'z')
-    used_alpha = None
 
-    def __init__(self, symbol, alphabet, states, initial_state, accepting_states, transitions):
-        self.symbol = symbol
+    def __init__(self, symbols, alphabet, states, initial_state, accepting_states, transitions):
+        self.symbols = symbols
         self.alphabet = alphabet
         self.states = states
         self._initial_state = initial_state
@@ -75,14 +72,30 @@ class Automa:
         return self._initial_state
 
     def make_transition(self, action):
-        if 'X' in self.transitions[self._current_state]: # X means whatever action
-            self._current_state = self.transitions[self._current_state]['X']
-        elif action == self.symbol:
-            self._current_state = self.transitions[self._current_state]['1']
-        elif action != self.symbol:
-            self._current_state = self.transitions[self._current_state]['0']
+        if action in self.symbols:
+            for act in self.transitions[self._current_state].keys():
+                temp = dict(zip(self.symbols,[value for value in act]))
+                if temp[action] == '1' or temp[action] == 'X':
+                    self._current_state = self.transitions[self._current_state][act]
+                else:
+                    continue
         else:
-            raise ValueError('[ERROR]: could not make transition with action {}'.format(action))
+            number_of_symbols = len(self.symbols)
+            if 'X'*number_of_symbols in self.transitions[self._current_state]:
+                self._current_state = self.transitions[self._current_state]['X'*number_of_symbols]
+            elif '0'*number_of_symbols in self.transitions[self._current_state]:
+                self._current_state = self.transitions[self._current_state]['0' * number_of_symbols]
+            else:
+                raise ValueError('[ERROR]: could not make transition with action {}'.format(action))
+
+        # if 'X' in self.transitions[self._current_state]: # X means whatever action
+        #     self._current_state = self.transitions[self._current_state]['X']
+        # elif action == self.symbol:
+        #     self._current_state = self.transitions[self._current_state]['1']
+        # elif action != self.symbol:
+        #     self._current_state = self.transitions[self._current_state]['0']
+        # else:
+        #     raise ValueError('[ERROR]: could not make transition with action {}'.format(action))
 
     def is_accepting(self):
         if self._current_state in self.accepting_states:
@@ -101,8 +114,3 @@ class Automa:
                 return True
             else:
                 return False
-        #
-        # if input_symbol in self.transitions[self._initial_state]:
-        #     return self.transitions[self._initial_state][input_symbol]
-        # else:
-        #     raise ValueError('[ERROR]: "{}" is not a valid input symbol'.format(input_symbol))

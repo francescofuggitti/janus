@@ -42,7 +42,7 @@ def get_final_label(label):
 
         return inter_label
 
-def parse_dot(path, symbol):
+def parse_dot(path, symbols):
 
     graph = get_graph_from_dot(path)
 
@@ -93,7 +93,7 @@ def parse_dot(path, symbol):
 
     #istantiation of automaton
     automaton = Automa(
-        symbol=symbol,
+        symbols=symbols,
         alphabet={'0', '1', 'X'},
         states=states,
         initial_state=initial_state,

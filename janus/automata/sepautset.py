@@ -1,7 +1,7 @@
 from ltlf2dfa.Translator import Translator
 from ltlf2dfa.DotHandler import DotHandler
 from janus.automata.parserAutoma import parse_dot
-import os
+import os, re
 
 class SeparatedAutomataSet:
 
@@ -15,11 +15,11 @@ class SeparatedAutomataSet:
 
     def build_automaton(self, triple):
         automata_list = []
-        symbol = ''
         for formula in triple:
-            for c in formula:
-                if c.islower():
-                    symbol = c
+            symbols = [re.findall('[a-z]+', str(formula))]
+            # for c in formula:
+            #     if c.islower():
+            #         symbol = c
             trans = Translator(formula)
             trans.formula_parser()
             trans.translate()
@@ -28,10 +28,10 @@ class SeparatedAutomataSet:
             dot = DotHandler("inter-automa.dot")
             dot.modify_dot()
             dot.output_dot() # returns automa.dot
-            automata_list.append(parse_dot("automa.dot", symbol))
+            automata_list.append(parse_dot("automa.dot", symbols))
             os.remove("automa.mona")
             os.remove("automa.dot")
-            symbol = ''
+            symbols = []
         return automata_list
 
     def compute_automa(self):
