@@ -81,12 +81,15 @@ class Automa:
                     continue
         else:
             number_of_symbols = len(self.symbols)
-            if 'X'*number_of_symbols in self.transitions[self._current_state]:
-                self._current_state = self.transitions[self._current_state]['X'*number_of_symbols]
-            elif '0'*number_of_symbols in self.transitions[self._current_state]:
-                self._current_state = self.transitions[self._current_state]['0' * number_of_symbols]
+            if number_of_symbols == 0: # true when there is True automa
+                self._current_state = self.transitions[self._current_state]['X']
             else:
-                raise ValueError('[ERROR]: could not make transition with action {}'.format(action))
+                if 'X'*number_of_symbols in self.transitions[self._current_state]:
+                    self._current_state = self.transitions[self._current_state]['X'*number_of_symbols]
+                elif '0'*number_of_symbols in self.transitions[self._current_state]:
+                    self._current_state = self.transitions[self._current_state]['0' * number_of_symbols]
+                else:
+                    raise ValueError('[ERROR]: could not make transition with action {}'.format(action))
 
         # if 'X' in self.transitions[self._current_state]: # X means whatever action
         #     self._current_state = self.transitions[self._current_state]['X']
@@ -104,13 +107,23 @@ class Automa:
             return False
 
     def accepts(self, input_symbol):
-        if input_symbol == self.symbol:
-            if ('X' or '1') in self.transitions[self._initial_state]:
-                return True
-            else:
-                return False
+        _current_state = self._current_state
+        self._current_state = self._initial_state
+        self.make_transition(input_symbol)
+        if self.is_accepting():
+            self._current_state = _current_state
+            return True
         else:
-            if ('X' or '0') in self.transitions[self._initial_state]:
-                return True
-            else:
-                return False
+            self._current_state = _current_state
+            return False
+        #
+        # if input_symbol == self.symbol:
+        #     if ('X' or '1') in self.transitions[self._initial_state]:
+        #         return True
+        #     else:
+        #         return False
+        # else:
+        #     if ('X' or '0') in self.transitions[self._initial_state]:
+        #         return True
+        #     else:
+        #         return False
