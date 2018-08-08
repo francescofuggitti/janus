@@ -20,10 +20,10 @@ print('[ACTIVATOR]: ' + activator)
 
 # formula = params['<formula>']
 
-sepFormula1 = SeparatedFormula(('Yb', 'T', 'T'))
-sepFormula2 = SeparatedFormula(('T', 'T', 'Ec'))
+sepFormula1 = SeparatedFormula(('Oerregistration', 'T', 'T'))
+#sepFormula2 = SeparatedFormula(('T', 'T', 'Ecrp'))
 
-constraint = Formula([sepFormula1, sepFormula2]) # set manually the constraint
+constraint = Formula([sepFormula1]) # set manually the constraint
 print('[SEPARATED FORMULAS]: ' + str(constraint))
 
 sepautset = SeparatedAutomataSet(constraint).automa_set
@@ -35,14 +35,14 @@ for trace in log_set:
     for event in trace:
         # print('[EVENT]: ' + event)
         for pastAut in sepautset:
-            pastAut[0].make_transition(event)
+            pastAut[0].make_transition(event.replace(' ','').lower())
             # if pastAut[0].symbol == 'b':
             #     print('[PAST AUT ' + str(pastAut[0].symbol) + ' ]: ' + str(pastAut[0].current_state))
         if event == activator:
             #J = set()
             J = {}
             for past, now, future in sepautset:
-                if past.is_accepting() and now.accepts(event):
+                if past.is_accepting() and now.accepts(event.replace(' ','').lower()):
                     #print('[PAST ' + str(past.symbols) + ' IN ACCEPTING]: state == ' + str(past.current_state))
                     #J.add((future.initial_state, future))
                     temp = copy.deepcopy(future)
@@ -53,7 +53,7 @@ for trace in log_set:
         #print('[OBAG EVENT ' + event + '] ' + str(O))
         for j in O:
             for aut, st in j.items():
-                aut.make_transition(event)
+                aut.make_transition(event.replace(' ','').lower())
                 #print('aut {0}, state after transition {1}: {2}'.format(aut.symbols, event, aut.current_state))
                 j[aut] = aut.current_state
 
@@ -69,4 +69,6 @@ for trace in log_set:
         print('[FULFILLED]: ' + str(count))
         print('[INTERESTINGNESS DEGREE]: ' + str(count/len(O)))
     else:
-        print(0)
+        print('[ACTIVATED]: 0')
+        print('[FULFILLED]: 0')
+        print('[INTERESTINGNESS DEGREE]: 0')
