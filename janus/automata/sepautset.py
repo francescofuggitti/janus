@@ -16,7 +16,7 @@ class SeparatedAutomataSet:
     def build_automaton(self, triple):
         automata_list = []
         for formula in triple:
-            symbols = [re.findall('[a-z]+', str(formula))]
+            symbols = re.findall('[a-z]+', str(formula))
             # for c in formula:
             #     if c.islower():
             #         symbol = c

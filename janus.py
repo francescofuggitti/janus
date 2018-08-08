@@ -43,7 +43,7 @@ for trace in log_set:
             J = {}
             for past, now, future in sepautset:
                 if past.is_accepting() and now.accepts(event):
-                    #print('[PAST ' + str(past.symbol) + ' IN ACCEPTING]: state == ' + str(past.current_state))
+                    #print('[PAST ' + str(past.symbols) + ' IN ACCEPTING]: state == ' + str(past.current_state))
                     #J.add((future.initial_state, future))
                     temp = copy.deepcopy(future)
                     J[temp] = future.initial_state
@@ -54,7 +54,7 @@ for trace in log_set:
         for j in O:
             for aut, st in j.items():
                 aut.make_transition(event)
-                #print('aut {0}, state after transition {1}: {2}'.format(aut.symbol, event, aut.current_state))
+                #print('aut {0}, state after transition {1}: {2}'.format(aut.symbols, event, aut.current_state))
                 j[aut] = aut.current_state
 
     if O:
