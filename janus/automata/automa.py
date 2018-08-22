@@ -72,14 +72,24 @@ class Automa:
         return self._initial_state
 
     def make_transition(self, action):
+        # print('make transition '+str(self.transitions))
+        # print('transitions' + str(self.transitions))
+
         if action in self.symbols:
+            #print('ACTION: '+str(action)+' in symbols')
             for act in self.transitions[self._current_state].keys():
                 temp = dict(zip(self.symbols,[value for value in act]))
-                if temp[action] == '1' or temp[action] == 'X':
+                #print('ACT: ' + str(act) + ' CURRENT_STATE: ' + str(self._current_state) + ' TEMP: '+str(temp))
+                additional = temp.copy()
+                del additional[action]
+                #print(additional)
+                if (temp[action] == '1' or temp[action] == 'X') and all(value in {'0', 'X'} for value in additional.values()):
+                    # print('YES: ' + str(temp))
                     self._current_state = self.transitions[self._current_state][act]
                 else:
                     continue
         else:
+            #print('ACTION: '+str(action)+' NOT in symbols')
             number_of_symbols = len(self.symbols)
             if number_of_symbols == 0: # true when there is True automa
                 self._current_state = self.transitions[self._current_state]['X']
@@ -90,6 +100,7 @@ class Automa:
                     self._current_state = self.transitions[self._current_state]['0'*number_of_symbols]
                 else:
                     raise ValueError('[ERROR]: could not make transition with action {}'.format(action))
+        # print(self._current_state)
 
     def is_accepting(self):
         if self._current_state in self.accepting_states:
