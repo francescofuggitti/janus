@@ -17,9 +17,6 @@ class SeparatedAutomataSet:
         automata_list = []
         for formula in triple:
             symbols = re.findall('[a-z]+', str(formula))
-            # for c in formula:
-            #     if c.islower():
-            #         symbol = c
             trans = Translator(formula)
             trans.formula_parser()
             trans.translate()
