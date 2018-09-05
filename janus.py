@@ -20,26 +20,26 @@ print('[ACTIVATOR]: ' + activator)
 
 # formula = params['<formula>']
 
-sepFormula1 = SeparatedFormula(('Oerregistration', 'T', 'T'))
-#sepFormula2 = SeparatedFormula(('T', 'T', 'Ecrp'))
+# trace = ('LacticAcid', 'ER Registration', 'ER Triage', 'LacticAcid', 'Leucocytes', 'CRP', 'IV Liquid')
 
-constraint = Formula([sepFormula1]) # set manually the constraint
+sepFormula1 = SeparatedFormula(('Oerregistration', 'T', 'T'))
+sepFormula2 = SeparatedFormula(('T', 'T', 'Ecrp'))
+
+constraint = Formula([sepFormula1, sepFormula2]) # set manually the constraint
 print('[SEPARATED FORMULAS]: ' + str(constraint))
 
 sepautset = SeparatedAutomataSet(constraint).automa_set
 
 for trace in log_set:
     print('[TRACE]: ' + str(trace))
-# JANUS ALGORITHM SKETCH
+    # JANUS ALGORITHM SKETCH
     O = []
     for event in trace:
         # print('[EVENT]: ' + event)
         for pastAut in sepautset:
             pastAut[0].make_transition(event.replace(' ','').lower())
-            # if pastAut[0].symbol == 'b':
-            #     print('[PAST AUT ' + str(pastAut[0].symbol) + ' ]: ' + str(pastAut[0].current_state))
+
         if event == activator:
-            #J = set()
             J = {}
             for past, now, future in sepautset:
                 if past.is_accepting() and now.accepts(event.replace(' ','').lower()):
@@ -47,10 +47,10 @@ for trace in log_set:
                     #J.add((future.initial_state, future))
                     temp = copy.deepcopy(future)
                     J[temp] = future.initial_state
-            #print('Janus is: ' + str(J))
+            # print('Janus is: ' + str(J))
             O.append(J)
             #print('O bag is: ' + str(O))
-        #print('[OBAG EVENT ' + event + '] ' + str(O))
+        # print('[OBAG EVENT ' + event + '] ' + str(O))
         for j in O:
             for aut, st in j.items():
                 aut.make_transition(event.replace(' ','').lower())
@@ -63,6 +63,7 @@ for trace in log_set:
             for automa, state in janus.items():
                 if state in automa.accepting_states:
                     count += 1
+                    break
                 else:
                     continue
         print('[ACTIVATED]: ' + str(len(O)))
