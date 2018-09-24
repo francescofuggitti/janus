@@ -63,7 +63,7 @@ def parse_dot(path, symbols):
     lines = get_file(path)
     accepting_states = set() #set containing all accepting states of the automaton
     for line in lines[7:]:
-        if line.strip() != 'node [shape=circle];':
+        if line.strip() != 'node [shape = circle];':
             temp = line.replace(";\n", "")
             accepting_states.add(temp.strip())
         else:
