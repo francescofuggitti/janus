@@ -7,7 +7,7 @@ import argparse, copy
 args_parser = argparse.ArgumentParser(description='Janus algorithm computes the interestingness degree of an RCon over'+
                                                   ' a trace taken by an event log L')
 args_parser.add_argument('<event-log>', help='Path to the event log -- MANDATORY')
-args_parser.add_argument('<activator>', type=str, help='Activator -- MANDATORY')
+#args_parser.add_argument('<activator>', type=str, help='Activator -- MANDATORY')
 # args_parser.add_argument('<formula>', type=str, help='Formula to be checked -- MANDATORY')
 
 params = vars(args_parser.parse_args())
@@ -15,17 +15,19 @@ params = vars(args_parser.parse_args())
 input_log = InputHandler(params['<event-log>'])
 log_set = input_log.event_log
 
-activator = params['<activator>']
-print('[ACTIVATOR]: ' + activator)
+#activator = params['<activator>']
+#print('[ACTIVATOR]: ' + activator)
 
 # formula = params['<formula>']
 
 # trace = ('LacticAcid', 'ER Registration', 'ER Triage', 'LacticAcid', 'Leucocytes', 'CRP', 'IV Liquid')
 
-sepFormula1 = SeparatedFormula(('Oerregistration', 'T', 'T'))
-sepFormula2 = SeparatedFormula(('T', 'T', 'Ecrp'))
+sepFormula0 = SeparatedFormula(('false', 'leucocytes|lacticacid', 'false'))
+sepFormula1 = SeparatedFormula(('Yerregistration', 'true & (leucocytes|lacticacid)', 'true'))
+sepFormula2 = SeparatedFormula(('true', 'true & (leucocytes|lacticacid)', 'Fcrp'))
 
-constraint = Formula([sepFormula1, sepFormula2]) # set manually the constraint
+constraint = Formula([sepFormula0, sepFormula1, sepFormula2]) # set manually the constraint
+#constraint = Formula([sepFormula0, sepFormula1, sepFormula2])
 print('[SEPARATED FORMULAS]: ' + str(constraint))
 
 sepautset = SeparatedAutomataSet(constraint).automa_set
@@ -39,7 +41,8 @@ for trace in log_set:
         for pastAut in sepautset:
             pastAut[0].make_transition(event.replace(' ','').lower())
 
-        if event == activator:
+        #if event == activator:
+        if sepautset[0][1].accepts(event.replace(' ','').lower()):
             J = {}
             for past, now, future in sepautset:
                 if past.is_accepting() and now.accepts(event.replace(' ','').lower()):
