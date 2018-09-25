@@ -16,7 +16,7 @@ class SeparatedAutomataSet:
     def build_automaton(self, triple):
         automata_list = []
         for formula in triple:
-            symbols = re.findall('[a-z]+', str(formula))
+            symbols = re.findall('(?<![a-z])(?!true|false)[_a-z0-9]+', str(formula))
             trans = Translator(formula)
             trans.formula_parser()
             trans.translate()
@@ -32,8 +32,8 @@ class SeparatedAutomataSet:
         return automata_list
 
     def compute_automa(self):
-        result = set()
+        result = []
         for triple in self.separated_formulas_set:
             past, present, future = self.build_automaton(triple)
-            result.add( (past, present, future) )
+            result.append( (past, present, future) )
         return result
