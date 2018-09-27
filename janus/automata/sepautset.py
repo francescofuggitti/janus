@@ -20,7 +20,7 @@ class SeparatedAutomataSet:
             trans = Translator(formula)
             trans.formula_parser()
             trans.translate()
-            trans.createMonafile(True)  # true for DECLARE assumptions
+            trans.createMonafile(False)  # true for DECLARE assumptions
             trans.invoke_mona() # returns inter-automa.dot
             dot = DotHandler()
             dot.modify_dot()

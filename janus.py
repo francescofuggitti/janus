@@ -20,11 +20,11 @@ log_set = input_log.event_log
 
 # formula = params['<formula>']
 
-# trace = ('LacticAcid', 'ER Registration', 'ER Triage', 'LacticAcid', 'Leucocytes', 'CRP', 'IV Liquid')
+trace = (['erregistration'], ['ertriage'], ['lacticacid'], ['leucocytes','lacticacid'], ['crp','lacticacid'], ['lacticacid'], ['ivliquid'])
 
-sepFormula0 = SeparatedFormula(('false', 'leucocytes|lacticacid', 'false'))
-sepFormula1 = SeparatedFormula(('Yerregistration', 'true & (leucocytes|lacticacid)', 'true'))
-sepFormula2 = SeparatedFormula(('true', 'true & (leucocytes|lacticacid)', 'Fcrp'))
+sepFormula0 = SeparatedFormula(('false', 'leucocytes | lacticacid', 'false'))
+sepFormula1 = SeparatedFormula(('Yerregistration', 'true & (leucocytes | lacticacid)', 'true'))
+sepFormula2 = SeparatedFormula(('true', 'true & (leucocytes | lacticacid)', 'Fcrp'))
 
 constraint = Formula([sepFormula0, sepFormula1, sepFormula2]) # set manually the constraint
 #constraint = Formula([sepFormula0, sepFormula1, sepFormula2])
@@ -32,47 +32,50 @@ print('[SEPARATED FORMULAS]: ' + str(constraint))
 
 sepautset = SeparatedAutomataSet(constraint).automa_set
 
-for trace in log_set:
-    print('[TRACE]: ' + str(trace))
+# for trace in list(log_set)[:4]:
+print('[TRACE]: ' + str(trace))
     # JANUS ALGORITHM SKETCH
-    O = []
-    for event in trace:
-        # print('[EVENT]: ' + event)
-        for pastAut in sepautset:
-            pastAut[0].make_transition(event.replace(' ','').lower())
+O = []
+for event in trace:
+    #print('[EVENT]: ' + event)
+    for pastAut in sepautset:
+        pastAut[0].make_transition(event)
+        # print(pastAut[0].transitions)
 
-        #if event == activator:
-        if sepautset[0][1].accepts(event.replace(' ','').lower()):
-            J = {}
-            for past, now, future in sepautset:
-                if past.is_accepting() and now.accepts(event.replace(' ','').lower()):
-                    #print('[PAST ' + str(past.symbols) + ' IN ACCEPTING]: state == ' + str(past.current_state))
-                    #J.add((future.initial_state, future))
-                    temp = copy.deepcopy(future)
-                    J[temp] = future.initial_state
-            # print('Janus is: ' + str(J))
-            O.append(J)
-            #print('O bag is: ' + str(O))
-        # print('[OBAG EVENT ' + event + '] ' + str(O))
-        for j in O:
-            for aut, st in j.items():
-                aut.make_transition(event.replace(' ','').lower())
-                #print('aut {0}, state after transition {1}: {2}'.format(aut.symbols, event, aut.current_state))
-                j[aut] = aut.current_state
+    #if event == activator:
+    if sepautset[0][1].accepts(event):
+        J = {}
+        for past, now, future in sepautset:
+            if past.is_accepting() and now.accepts(event):
+                #print('[PAST ' + str(past.symbols) + ' IN ACCEPTING]: state == ' + str(past.current_state))
+                #J.add((future.initial_state, future))
+                temp = copy.deepcopy(future)
+                J[temp] = future.initial_state
+        # print('Janus is: ' + str(J))
+        O.append(J)
+        #print('O bag is: ' + str(O))
+    # print('[OBAG EVENT ' + event + '] ' + str(O))
+    for j in O:
+        for aut, st in j.items():
+            aut.make_transition(event)
+            #print('aut {0}, state after transition {1}: {2}'.format(aut.symbols, event, aut.current_state))
+            j[aut] = aut.current_state
 
-    if O:
-        count = 0
-        for janus in O:
-            for automa, state in janus.items():
-                if state in automa.accepting_states:
-                    count += 1
-                    break
-                else:
-                    continue
-        print('[ACTIVATED]: ' + str(len(O)))
-        print('[FULFILLED]: ' + str(count))
-        print('[INTERESTINGNESS DEGREE]: ' + str(count/len(O)))
-    else:
-        print('[ACTIVATED]: 0')
-        print('[FULFILLED]: 0')
-        print('[INTERESTINGNESS DEGREE]: 0')
+if O:
+    count = 0
+    for janus in O:
+        for automa, state in janus.items():
+            if state in automa.accepting_states:
+                count += 1
+                break
+            else:
+                continue
+    print('[ACTIVATED]: ' + str(len(O)))
+    print('[FULFILLED]: ' + str(count))
+    print('[INTERESTINGNESS DEGREE]: ' + str(count/len(O)))
+else:
+    print('[ACTIVATED]: 0')
+    print('[FULFILLED]: 0')
+    print('[INTERESTINGNESS DEGREE]: 0')
+
+# [event.replace(' ','').lower()]
